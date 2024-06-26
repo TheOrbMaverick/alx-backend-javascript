@@ -1,5 +1,4 @@
-import uploadPhoto from './utils';
-import createUser from './utils';
+import { uploadPhoto, createUser } from './utils';
 
 export default function handleProfileSignup() {
   Promise.all([uploadPhoto(), createUser()])
@@ -7,6 +6,6 @@ export default function handleProfileSignup() {
       const { body } = photo;
       const { firstName } = user;
       const { lastName } = user;
-      console.log(body, firstName, lastName);
+      console.log(`${body} ${firstName} ${lastName}`);
     });
 }
