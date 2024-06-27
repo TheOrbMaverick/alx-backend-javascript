@@ -1,3 +1,4 @@
+// eslint-disable-next-line class-methods-use-this
 import Car from './10-car.js';
 
 const cloneSymbol = Symbol('clone');
