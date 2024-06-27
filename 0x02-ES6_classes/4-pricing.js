@@ -1,54 +1,54 @@
-import Currency from "./3-currency";
+import Currency from './3-currency';
 
 export default class Pricing {
-    constructor(amount, currency) {
-        // Type checking
-        if (typeof amount !== 'number') {
-            throw new TypeError('Amount must be a number');
-        }
-        if (!(currency instanceof Currency)) {
-            throw new TypeError('Currency must be an instance of Currency');
-        }
-
-        // Storing attributes
-        this._amount = amount;
-        this._currency = currency;
+  constructor(amount, currency) {
+    // Type checking
+    if (typeof amount !== 'number') {
+      throw new TypeError('Amount must be a number');
+    }
+    if (!(currency instanceof Currency)) {
+      throw new TypeError('Currency must be an instance of Currency');
     }
 
-    // Getters
-    get amount() {
-        return this._amount;
-    }
+    // Storing attributes
+    this._amount = amount;
+    this._currency = currency;
+  }
 
-    get currency() {
-        return this._currency;
-    }
+  // Getters
+  get amount() {
+    return this._amount;
+  }
 
-    // Setters
-    set amount(newAmount) {
-        if (typeof newAmount !== 'number') {
-            throw new TypeError('Amount must be a number');
-        }
-        this._amount = newAmount;
-    }
+  get currency() {
+    return this._currency;
+  }
 
-    set currency(newCurrency) {
-        if (!(newCurrency instanceof Currency)) {
-            throw new TypeError('Currency must be an instance of Currency');
-        }
-        this._currency = newCurrency;
+  // Setters
+  set amount(newAmount) {
+    if (typeof newAmount !== 'number') {
+      throw new TypeError('Amount must be a number');
     }
+    this._amount = newAmount;
+  }
 
-    // Method to display full price
-    displayFullPrice() {
-        return `${this._amount} ${this._currency.displayFullCurrency()}`;
+  set currency(newCurrency) {
+    if (!(newCurrency instanceof Currency)) {
+      throw new TypeError('Currency must be an instance of Currency');
     }
+    this._currency = newCurrency;
+  }
 
-    // Static method to convert price
-    static convertPrice(amount, conversionRate) {
-        if (typeof amount !== 'number' || typeof conversionRate !== 'number') {
-            throw new TypeError('Both amount and conversion rate must be numbers');
-        }
-        return amount * conversionRate;
+  // Method to display full price
+  displayFullPrice() {
+    return `${this._amount} ${this._currency.displayFullCurrency()}`;
+  }
+
+  // Static method to convert price
+  static convertPrice(amount, conversionRate) {
+    if (typeof amount !== 'number' || typeof conversionRate !== 'number') {
+      throw new TypeError('Both amount and conversion rate must be numbers');
     }
+    return amount * conversionRate;
+  }
 }
