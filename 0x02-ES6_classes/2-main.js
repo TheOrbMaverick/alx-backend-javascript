@@ -1,4 +1,4 @@
-import HolbertonCourse from './2-hbtn_course.js';
+import HolbertonCourse from './2-hbtn_course';
 
 const c1 = new HolbertonCourse('ES6', 1, ['Bob', 'Jane']);
 console.log(c1.name);
@@ -12,7 +12,7 @@ try {
 }
 
 try {
-  const c2 = new HolbertonCourse('ES6', '1', ['Bob', 'Jane']);
+  new HolbertonCourse('ES6', '1', ['Bob', 'Jane']);
 } catch (err) {
   console.log(err);
 }

@@ -1,4 +1,4 @@
-import Car from './10-car.js';
+import Car from './10-car';
 
 class TestCar extends Car {}
 
@@ -11,4 +11,4 @@ console.log(tc1 instanceof TestCar);
 console.log(tc2);
 console.log(tc2 instanceof TestCar);
 
-console.log(tc1 == tc2);
+console.log(tc1 === tc2);
