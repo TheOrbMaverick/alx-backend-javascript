@@ -9,7 +9,7 @@ export default class Car {
 
   // Method to clone the car
   [cloneSymbol]() {
-    return new Car(this._brand, this._motor, this._color);
+    return new this.constructor(this._brand, this._motor, this._color);
   }
 
   // Public method to clone the car
