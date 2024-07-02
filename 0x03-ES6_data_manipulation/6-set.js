@@ -1,3 +1,3 @@
 export default function setFromArray(arrayOfAnyKind) {
-  return Set(arrayOfAnyKind);
+  return new Set(arrayOfAnyKind);
 }
