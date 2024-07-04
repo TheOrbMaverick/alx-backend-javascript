@@ -11,15 +11,33 @@ interface Directors extends Teacher {
     numberOfReports: number
 }
 
-function printTeacher(firstName: string, lastName: string) {
-    const firstLetter = firstName[0]
-    return firstLetter + '. ' + lastName
+interface printTeacherFunction {
+    (firstName: string, lastName: string): string;
 }
 
-interface printTeacherFunction {
-    firstLetter: string;
-    dot: '. ';
+// Implement the function
+const printTeacher: printTeacherFunction = (firstName, lastName) => {
+    return `${firstName.charAt(0)}. ${lastName}`;
+};
+
+interface StudentClass {
+    firstName: string;
     lastName: string;
 }
 
-console.log(printTeacher("John", "Doe"));
+class StudentClass {
+    firstName;
+    lastName;
+    constructor(firstName: string, lastName: string) {
+        this.firstName = firstName
+        this.lastName = lastName
+    }
+
+    workOnHomework(): string {
+        return "Currently working"
+    }
+
+    displayName(): string {
+        return this.firstName
+    }
+}
