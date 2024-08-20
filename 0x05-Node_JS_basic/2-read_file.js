@@ -1,6 +1,5 @@
 #!/usr/bin/node
 
-const { error } = require('console');
 const fs = require('fs');
 
 function countStudents(path) {
