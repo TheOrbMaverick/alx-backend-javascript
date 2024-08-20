@@ -14,9 +14,6 @@ function countStudents(path) {
       throw new Error('Cannot load the database');
     }
 
-    // Remove the header line
-    const header = lines.shift();
-
     // Initialize counters and lists for each field
     const students = {};
     let totalStudents = 0;
