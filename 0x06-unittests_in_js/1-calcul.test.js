@@ -17,8 +17,10 @@ describe('calculateNumber', () => {
       assert.strictEqual(calculateNumber('SUBTRACT', 1.4, 4.5), -4);
     });
 
-    it('should return -1 when subtracting 0.4 from -0.4', () => {
-      assert.strictEqual(calculateNumber('SUBTRACT', -0.4, 0.4), -1);
+    // Update the test case to handle -0 vs 0
+    it('should return 0 when subtracting 0.4 from -0.4', () => {
+      const result = calculateNumber('SUBTRACT', -0.4, 0.4);
+      assert.strictEqual(Math.abs(result), 0);
     });
   });
 
