@@ -19,12 +19,12 @@ const app = http.createServer((request, response) => {
         const databasePath = process.argv[2];
 
         countStudents(databasePath)
-        .then(() => {
+            .then(() => {
             response.end();
-        })
-        .catch((err) => {
+            })
+            .catch((err) => {
             response.end(err.message)
-        });
+            });
     } else {
         response.statusCode = 404;
         response.setHeader('Content-Type', 'text/plain');
