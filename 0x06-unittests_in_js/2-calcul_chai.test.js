@@ -17,10 +17,12 @@ describe('calculateNumber', () => {
       expect(calculateNumber('SUBTRACT', 1.4, 4.5)).to.equal(-4);
     });
 
-    it('should return -1 when subtracting 0.4 from -0.4', () => {
-      expect(calculateNumber('SUBTRACT', -0.4, 0.4)).to.equal(-1);
+    // Update the test case to handle -0 vs 0
+    it('should return 0 when subtracting 0.4 from -0.4', () => {
+        const result = calculateNumber('SUBTRACT', -0.4, 0.4);
+        assert.strictEqual(Math.abs(result), 0);
+      });
     });
-  });
 
   describe('DIVIDE', () => {
     it('should return 0.2 when dividing 1.4 by 4.5', () => {
