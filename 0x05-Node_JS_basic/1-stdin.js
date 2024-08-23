@@ -5,15 +5,16 @@ const readline = require('readline');
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
+  terminal: false, // This will help control the output formatting
 });
 
-console.log('Welcome to Holberton School, what is your name?\r');
+process.stdout.write('Welcome to Holberton School, what is your name?\n');
 
 rl.on('line', (input) => {
-  console.log(`Your name is: ${input}\r`);
+  process.stdout.write(`Your name is: ${input}\r\n`);
   rl.close();
 });
 
 rl.on('close', () => {
-  console.log('This important software is now closing\r');
+  process.stdout.write('This important software is now closing\r\n');
 });
