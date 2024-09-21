@@ -48,7 +48,7 @@ const listOfStudents = [student1, student2, student3, student4, student5];
 
 // Log the list of students and their descriptions
 console.log(listOfStudents);
-console.log(listOfStudents.map(student => student.fullStudentDescription));
+console.log(listOfStudents.map((student) => student.fullStudentDescription));
 
 // Export listOfStudents as the default export
 export default listOfStudents;
