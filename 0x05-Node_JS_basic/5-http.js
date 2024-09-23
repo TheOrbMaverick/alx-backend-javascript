@@ -1,6 +1,6 @@
 #!/usr/bin/node
 
-const fs = require('fs');
+const fs = require('fs').promises;
 const http = require('http');
 
 const HOST = 'localhost';
@@ -8,52 +8,49 @@ const app = http.createServer();
 const DB_FILE = process.argv.length > 2 ? process.argv[2] : '';
 const PORT = 1245;
 
-function countStudents(path) {
-  if (!path) {
-    reject(new Error('Cannot load the database'));
-  }
-  return fs.readFile(path, 'utf8')
-    .then((data) => {
-      // Split the data into lines and filter out any empty lines
-      const lines = data.trim().split('\n').filter((line) => line !== '');
+async function countStudents(path) {
+  try {
+    const data = await fs.readFile(path, 'utf8');
 
-      if (lines.length === 0) {
-        throw new Error('Cannot load the database');
-      }
+    // Split the data into lines and filter out any empty lines
+    const lines = data.trim().split('\n').filter((line) => line !== '');
 
-      // Remove the header line
+    if (lines.length === 0) {
+      throw new Error('Cannot load the database');
+    }
+
+    // Remove the header line
+    // eslint-disable-next-line no-unused-vars
+    const header = lines.shift();
+
+    // Initialize counters and lists for each field
+    const students = {};
+    let totalStudents = 0;
+
+    lines.forEach((line) => {
       // eslint-disable-next-line no-unused-vars
-      const header = lines.shift();
+      const [firstname, lastname, age, field] = line.split(',');
 
-      // Initialize counters and lists for each field
-      const students = {};
-      let totalStudents = 0;
-
-      lines.forEach((line) => {
-        // eslint-disable-next-line no-unused-vars
-        const [firstname, lastname, age, field] = line.split(',');
-
-        if (!students[field]) {
-          students[field] = [];
-        }
-
-        students[field].push(firstname);
-        // eslint-disable-next-line no-plusplus
-        totalStudents++;
-      });
-
-      // Log the total number of students
-      console.log(`Number of students: ${totalStudents}`);
-
-      // Log the number of students and list of first names for each field
-      for (const [field, names] of Object.entries(students)) {
-        console.log(`Number of students in ${field}: ${names.length}. List: ${names.join(', ')}`);
+      if (!students[field]) {
+        students[field] = [];
       }
-    })
-    .catch((err) => {
-      console.error('Cannot load the database');
-      throw err;
+
+      students[field].push(firstname);
+      // eslint-disable-next-line no-plusplus
+      totalStudents++;
     });
+
+    // Construct the result string
+    let result = `Number of students: ${totalStudents}\n`;
+
+    for (const [field, names] of Object.entries(students)) {
+      result += `Number of students in ${field}: ${names.length}. List: ${names.join(', ')}\n`;
+    }
+
+    return result.trim(); // Return the result string
+  } catch (err) {
+    throw new Error('Cannot load the database');
+  }
 }
 
 const ROUTE_HANDLER = [
@@ -64,9 +61,7 @@ const ROUTE_HANDLER = [
 
       res.statusCode = 200;
       res.setHeader('Content-Type', 'text/plain');
-      res.setHeader('Content-Length', text.length);
-      res.statusCode = 200;
-      res.write(Buffer.from(text));
+      res.end(text); // Use res.end() to send the response
     },
   },
   {
@@ -79,17 +74,15 @@ const ROUTE_HANDLER = [
           responseArray.push(report);
           const textResponse = responseArray.join('\n');
           res.setHeader('Content-Type', 'text/plain');
-          res.setHeader('Content-Length', textResponse.length);
           res.statusCode = 200;
-          res.write(Buffer.from(textResponse));
+          res.end(textResponse); // Properly end the response
         })
         .catch((err) => {
-          responseArray.push(err instanceof Error ? err.message : err.toString());
+          responseArray.push(err.message);
           const textResponse = responseArray.join('\n');
           res.setHeader('Content-Type', 'text/plain');
-          res.setHeader('Content-Length', textResponse.length);
           res.statusCode = 200;
-          res.write(Buffer.from(textResponse));
+          res.end(textResponse); // Properly end the response
         });
     },
   },
@@ -99,9 +92,13 @@ app.on('request', (req, res) => {
   for (const routeHandle of ROUTE_HANDLER) {
     if (routeHandle.route === req.url) {
       routeHandle.handler(req, res);
-      break;
+      return; // Return after handling the request
     }
   }
+
+  // If no route matched, send a 404
+  res.statusCode = 404;
+  res.end('Not Found');
 });
 
 app.listen(PORT, HOST, () => {
