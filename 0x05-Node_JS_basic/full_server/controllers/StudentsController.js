@@ -2,7 +2,7 @@ import readDatabase from '../utils';
 
 class StudentsController {
   static async getAllStudents(req, res) {
-    const databaseFile = process.argv[2]; // Get the database file from the arguments
+    const databaseFile = process.argv[2]; // Get the database file from the command-line arguments
     try {
       const students = await readDatabase(databaseFile);
 
@@ -21,7 +21,7 @@ class StudentsController {
   }
 
   static async getAllStudentsByMajor(req, res) {
-    const databaseFile = process.argv[2]; // Get the database file from the arguments
+    const databaseFile = process.argv[2]; // Get the database file from the command-line arguments
     const { major } = req.params;
 
     if (major !== 'CS' && major !== 'SWE') {
@@ -46,3 +46,4 @@ class StudentsController {
 }
 
 export default StudentsController;
+module.exports = StudentsController;

@@ -3,7 +3,7 @@ import fs from 'fs/promises';
 async function readDatabase(filePath) {
   try {
     const data = await fs.readFile(filePath, 'utf8');
-    const lines = data.trim().split('\n');
+    const lines = data.trim().split('\n').filter(line => line.length > 0); // Remove empty lines
 
     if (lines.length === 0) {
       throw new Error('Cannot load the database');
@@ -28,3 +28,5 @@ async function readDatabase(filePath) {
 }
 
 export default readDatabase;
+module.exports = readDatabase;
+
