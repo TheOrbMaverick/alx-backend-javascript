@@ -1,8 +1,9 @@
 import readDatabase from '../utils';
 
+
 class StudentsController {
   static async getAllStudents(req, res) {
-    const databaseFile = process.argv[2]; // Get the database file from the command-line arguments
+    const databaseFile = process.argv.length > 2 ? process.argv[2] : '';
     try {
       const students = await readDatabase(databaseFile);
 
@@ -21,7 +22,7 @@ class StudentsController {
   }
 
   static async getAllStudentsByMajor(req, res) {
-    const databaseFile = process.argv[2]; // Get the database file from the command-line arguments
+    const databaseFile = process.argv.length > 2 ? process.argv[2] : '';
     const { major } = req.params;
 
     if (major !== 'CS' && major !== 'SWE') {

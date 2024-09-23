@@ -10,9 +10,11 @@ async function readDatabase(filePath) {
     }
 
     const studentsByField = {};
-    const header = lines.shift(); // Remove the header
+    // eslint-disable-next-line no-unused-vars
+    const header = lines.shift();
 
     for (const line of lines) {
+    // eslint-disable-next-line no-unused-vars
       const [firstname, lastname, age, field] = line.split(',');
 
       if (!studentsByField[field]) {
