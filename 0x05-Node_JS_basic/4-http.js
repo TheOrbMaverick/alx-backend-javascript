@@ -9,7 +9,7 @@ const app = http.createServer().on('request', (_, res) => {
   res.statusCode = 200;
   res.setHeader('Content-Type', 'text/plain');
   res.setHeader('Content-Length', text.length);
-  res.statusCode = 200
+  res.statusCode = 200;
   res.write(Buffer.from(text));
 });
 
