@@ -1,34 +1,76 @@
 #!/usr/bin/node
 
 const express = require('express');
-const countStudents = require('./3-read_file_async');
+const fs = require('fs').promises;
 
 const app = express();
+const PORT = 1245;
+const DB_FILE = process.argv.length > 2 ? process.argv[2] : '';
 
+async function countStudents(path) {
+  try {
+    const data = await fs.readFile(path, 'utf8');
+    const lines = data.trim().split('\n').filter((line) => line !== '');
+
+    if (lines.length === 0) {
+      throw new Error('Cannot load the database');
+    }
+
+    // Remove the header line
+    const header = lines.shift();
+
+    // Initialize counters and lists for each field
+    const students = {};
+    let totalStudents = 0;
+
+    lines.forEach((line) => {
+      const [firstname, lastname, age, field] = line.split(',');
+
+      if (!students[field]) {
+        students[field] = [];
+      }
+
+      students[field].push(firstname);
+      totalStudents++;
+    });
+
+    // Construct the result string
+    let result = `Number of students: ${totalStudents}\n`;
+
+    for (const [field, names] of Object.entries(students)) {
+      result += `Number of students in ${field}: ${names.length}. List: ${names.join(', ')}\n`;
+    }
+
+    return result.trim();
+  } catch (err) {
+    throw new Error('Cannot load the database');
+  }
+}
+
+// Define the root route
 app.get('/', (req, res) => {
-  res.send('Hello Holberton School!');
+  res.status(200).send('Hello Holberton School!');
 });
 
+// Define the /students route
 app.get('/students', (req, res) => {
-  const databasePath = process.argv[2];
+  const responseArray = ['This is the list of our students'];
 
-  if (!databasePath) {
-    res.status(500).send('Database file path not provided');
-    return;
-  }
-
-  countStudents(databasePath)
-    .then((output) => {
-      res.send(`This is the list of our students\n${output}`);
+  countStudents(DB_FILE)
+    .then((report) => {
+      responseArray.push(report);
+      res.status(200).send(responseArray.join('\n'));
     })
     .catch((err) => {
-      res.status(500).send(err.message);
+      responseArray.push(err.message);
+      res.status(200).send(responseArray.join('\n'));
     });
 });
 
-const PORT = 1245;
+// Start the server
 app.listen(PORT, () => {
-  console.log(`Server is listening on port ${PORT}`);
+  console.log(`Server listening on http://localhost:${PORT}`);
 });
 
 module.exports = app;
+
