@@ -3,6 +3,12 @@
 const fs = require('fs');
 
 function countStudents(path) {
+  if (!fs.existsSync(dataPath)) {
+    throw new Error('Cannot load the database');
+  }
+  if (!fs.statSync(dataPath).isFile()) {
+    throw new Error('Cannot load the database');
+  }
   try {
     // Read the file synchronously
     const data = fs.readFileSync(path, 'utf8');
