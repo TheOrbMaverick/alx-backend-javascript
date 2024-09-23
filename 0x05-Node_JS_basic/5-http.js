@@ -9,6 +9,9 @@ const DB_FILE = process.argv.length > 2 ? process.argv[2] : '';
 const PORT = 1245;
 
 function countStudents(path) {
+  if (!path) {
+    reject(new Error('Cannot load the database'));
+  }
   return fs.readFile(path, 'utf8')
     .then((data) => {
       // Split the data into lines and filter out any empty lines
