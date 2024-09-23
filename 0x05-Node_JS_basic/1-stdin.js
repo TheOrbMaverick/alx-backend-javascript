@@ -5,13 +5,14 @@ const readline = require('readline');
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
-  terminal: false, // This will help control the output formatting
+  terminal: false,
 });
 
 process.stdout.write('Welcome to Holberton School, what is your name?\n');
 
 rl.on('line', (input) => {
-  process.stdout.write(`Your name is: ${input}\n`);
+  const cleanedInput = input.replace(/\r/, ''); // Remove carriage return
+  process.stdout.write(`Your name is: ${cleanedInput}\r\n`);
   rl.close();
 });
 
