@@ -15,6 +15,7 @@ function countStudents(path) {
     }
 
     // Remove the header line
+    // eslint-disable-next-line no-unused-vars
     const header = lines.shift();
 
     // Initialize counters and lists for each field
@@ -22,6 +23,7 @@ function countStudents(path) {
     let totalStudents = 0;
 
     lines.forEach((line) => {
+      // eslint-disable-next-line no-unused-vars
       const [firstname, lastname, age, field] = line.split(',');
 
       if (!students[field]) {
@@ -29,6 +31,7 @@ function countStudents(path) {
       }
 
       students[field].push(firstname);
+      // eslint-disable-next-line no-plusplus
       totalStudents++;
     });
 
