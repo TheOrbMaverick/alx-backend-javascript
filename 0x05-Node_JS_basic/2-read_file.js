@@ -3,10 +3,10 @@
 const fs = require('fs');
 
 function countStudents(path) {
-  if (!fs.existsSync(dataPath)) {
+  if (!fs.existsSync(path)) {
     throw new Error('Cannot load the database');
   }
-  if (!fs.statSync(dataPath).isFile()) {
+  if (!fs.statSync(path).isFile()) {
     throw new Error('Cannot load the database');
   }
   try {
