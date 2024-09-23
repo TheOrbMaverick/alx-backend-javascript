@@ -1,40 +1,102 @@
 #!/usr/bin/node
 
-const http = require('http');
-const url = require('url');
-const countStudents = require('./3-read_file_async');
+const fs = require('fs').promises;
 
-const app = http.createServer((request, response) => {
-  const parsedUrl = url.parse(request.url, true);
+function countStudents(path) {
+  return fs.readFile(path, 'utf8')
+    .then((data) => {
+      // Split the data into lines and filter out any empty lines
+      const lines = data.trim().split('\n').filter((line) => line !== '');
 
-  if (parsedUrl.pathname === '/') {
-    response.statusCode = 200;
-    response.setHeader('Content-Type', 'text/plain');
-    response.end('Hello Holberton School!\n');
-  } else if (parsedUrl.pathname === '/students') {
-    response.statusCode = 200;
-    response.setHeader('Content-Type', 'text/plain');
-    response.write('This is the list of our students\n');
+      if (lines.length === 0) {
+        throw new Error('Cannot load the database');
+      }
 
-    const databasePath = process.argv[2];
+      // Remove the header line
+      // eslint-disable-next-line no-unused-vars
+      const header = lines.shift();
 
-    countStudents(databasePath)
-      .then(() => {
-        response.end();
-      })
-      .catch((err) => {
-        response.end(err.message);
+      // Initialize counters and lists for each field
+      const students = {};
+      let totalStudents = 0;
+
+      lines.forEach((line) => {
+        // eslint-disable-next-line no-unused-vars
+        const [firstname, lastname, age, field] = line.split(',');
+
+        if (!students[field]) {
+          students[field] = [];
+        }
+
+        students[field].push(firstname);
+        // eslint-disable-next-line no-plusplus
+        totalStudents++;
       });
-  } else {
-    response.statusCode = 404;
-    response.setHeader('Content-Type', 'text/plain');
-    response.end('Not Found\n');
+
+      // Log the total number of students
+      console.log(`Number of students: ${totalStudents}`);
+
+      // Log the number of students and list of first names for each field
+      for (const [field, names] of Object.entries(students)) {
+        console.log(`Number of students in ${field}: ${names.length}. List: ${names.join(', ')}`);
+      }
+    })
+    .catch((err) => {
+      console.error('Cannot load the database');
+      throw err;
+    });
+}
+
+const ROUTE_HANDLER = [
+  {
+    route: '/',
+    handler(_, res) {
+      const text = 'Hello Holberton School!';
+
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'text/plain');
+      res.setHeader('Content-Length', text.length);
+      res.statusCode = 200;
+      res.write(Buffer.from(text));
+    },
+  },
+  {
+    route: '/students',
+    handler(_, res) {
+      const responseParts = ['This is the list of our students'];
+
+      countStudents(process.argv[2])
+        .then((report) => {
+          responseParts.push(report);
+          const textResponse = responseParts.join('\n');
+          res.setHeader('Content-Type', 'text/plain');
+          res.setHeader('Content-Length', textResponse.length);
+          res.statusCode = 200;
+          res.write(Buffer.from(textResponse));
+        })
+        .catch((err) => {
+          responseParts.push(err instanceof Error ? err.message : err.toString());
+          const textResponse = responseParts.join('\n');
+          res.setHeader('Content-Type', 'text/plain');
+          res.setHeader('Content-Length', textResponse.length);
+          res.statusCode = 200;
+          res.write(Buffer.from(textResponse));
+        });
+    },
+  },
+];
+
+app.on('request', (req, res) => {
+  for (const routeHandle of ROUTE_HANDLER) {
+    if (routeHandle.route === req.url) {
+      routeHandle.handler(req, res);
+      break;
+    }
   }
 });
 
-const PORT = 1245;
-app.listen(PORT, () => {
-  console.log(`Server is listening on port ${PORT}`);
+app.listen(PORT, HOST, () => {
+  console.log(`Server listening at -> http://${HOST}:${PORT}\n`);
 });
 
 module.exports = app;
