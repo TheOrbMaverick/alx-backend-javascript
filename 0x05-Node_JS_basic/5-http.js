@@ -1,6 +1,12 @@
 #!/usr/bin/node
 
-const fs = require('fs').promises;
+const fs = require('fs');
+const http = require('http');
+
+const HOST = 'localhost';
+const app = http.createServer();
+const DB_FILE = process.argv.length > 2 ? process.argv[2] : '';
+const PORT = 1245;
 
 function countStudents(path) {
   return fs.readFile(path, 'utf8')
@@ -63,20 +69,20 @@ const ROUTE_HANDLER = [
   {
     route: '/students',
     handler(_, res) {
-      const responseParts = ['This is the list of our students'];
+      const responseArray = ['This is the list of our students'];
 
-      countStudents(process.argv[2])
+      countStudents(DB_FILE)
         .then((report) => {
-          responseParts.push(report);
-          const textResponse = responseParts.join('\n');
+          responseArray.push(report);
+          const textResponse = responseArray.join('\n');
           res.setHeader('Content-Type', 'text/plain');
           res.setHeader('Content-Length', textResponse.length);
           res.statusCode = 200;
           res.write(Buffer.from(textResponse));
         })
         .catch((err) => {
-          responseParts.push(err instanceof Error ? err.message : err.toString());
-          const textResponse = responseParts.join('\n');
+          responseArray.push(err instanceof Error ? err.message : err.toString());
+          const textResponse = responseArray.join('\n');
           res.setHeader('Content-Type', 'text/plain');
           res.setHeader('Content-Length', textResponse.length);
           res.statusCode = 200;
