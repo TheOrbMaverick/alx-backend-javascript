@@ -3,8 +3,7 @@
 process.stdout.write('Welcome to Holberton School, what is your name?\n');
 
 process.stdout.on('line', (input) => {
-  process.stdout.write(`Your name is: ${input}\n`);
-  rl.close();
+  process.stdout.write(`Your name is: ${input}`);
 });
 
 process.stdout.on('close', () => {
