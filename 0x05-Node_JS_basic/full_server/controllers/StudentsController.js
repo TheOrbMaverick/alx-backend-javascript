@@ -35,7 +35,7 @@ class StudentsController {
       });
   }
 
-  static async getAllStudentsByMajor(req, res) {
+  static getAllStudentsByMajor(req, res) {
     const databaseFile = process.argv.length > 2 ? process.argv[2] : '';
     const { major } = req.params;
 
