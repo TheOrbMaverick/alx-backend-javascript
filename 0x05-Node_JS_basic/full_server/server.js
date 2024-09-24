@@ -1,5 +1,5 @@
 import express from 'express';
-import router from './routes/index.js';
+import router from './routes/index';
 
 const app = express();
 const PORT = 1245;
@@ -7,7 +7,7 @@ const PORT = 1245;
 router(app);
 
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
 
 export default app;
