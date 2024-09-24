@@ -1,33 +1,36 @@
-import fs from 'fs/promises';
+import fs from 'fs';
 
-async function readDatabase(filePath) {
-  try {
-    const data = await fs.readFile(filePath, 'utf8');
-    const lines = data.trim().split('\n').filter(line => line.length > 0); // Remove empty lines
-
-    if (lines.length === 0) {
-      throw new Error('Cannot load the database');
+const readDatabase = (filePath) => new Promise((resolve, reject) => {
+    if (!filePath) {
+        reject(new Error('Cannot load the database'))
     }
+    if (filePath) {
+        fs.readFile(dataPath, (error, data) => {
+            if (error) {
+                reject(new Error('Cannot load Database'));
+            }
+            if (data) {
+                const lines = data.toString('utf-8').trim().split('\n')
+                const stdGrp = {};
+                const dbField = lines[0].split(',');
+                const names = dbField.slice(0, dbField.length - 1);
 
-    const studentsByField = {};
-    // eslint-disable-next-line no-unused-vars
-    const header = lines.shift();
-
-    for (const line of lines) {
-    // eslint-disable-next-line no-unused-vars
-      const [firstname, lastname, age, field] = line.split(',');
-
-      if (!studentsByField[field]) {
-        studentsByField[field] = [];
-      }
-      studentsByField[field].push(firstname);
+                for (const line of lines.slice(1)) {
+                    const record = line.split(',');
+                    const values = record.slice(0, record.length - 1);
+                    const field = record[record.length - 1];
+                    if (!Object.keys(stdGrp).includes(field)) {
+                        stdGrp[field] = [];
+                    }
+                    const entries = names
+                    .map((propName, id) => [propName, values[id]]);
+                    stdGrp[field].push(Object.fromEntries(entries));
+                }
+                resolve(stdGrp)
+            }
+        });
     }
-
-    return studentsByField;
-  } catch (error) {
-    throw new Error('Cannot load the database');
-  }
-}
+});
 
 export default readDatabase;
 module.exports = readDatabase;
